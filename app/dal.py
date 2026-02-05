@@ -1,15 +1,10 @@
 from connection import Mongo_connection
 import json
 import pymongo
-from pymongo import MongoClient
-# my_connection = Mongo_connection()
+my_connection = Mongo_connection()
 
-# collection = my_connection.collection
-client = MongoClient('mongodb://localhost:27017/')
 
-db = client['admin']
-# db.create_collection('employees')
-collection = db['employees']
+collection = my_connection.collection
 
 def seve_data(file_name):
     with open(file_name) as f:
@@ -28,13 +23,15 @@ class Mongo_qury:
         return [self.serialize_doc(doc) for doc in docs]    
 
     def get_engineering_high_salary_employees(self):
-        qury = {'$and':[{'job_role.department': 'Engineering'},{'salary': {'$gt': 65000}}]}
+        qury = {'$and':[{'job_role.department': 'Engineering'},
+                        {'salary': {'$gt': 65000}}]}
         select = {'_id':0, 'employee_id': 1, 'name': 1 ,'salary': 1}
         result = collection.find(qury, select).to_list()
         return result   
     
     def get_employees_by_age_and_role(self):
-        qury = {'$and':[{'age':{'$gte': 30}}, {'age': {'$lte': 45}},{'$or':[{'job_role.title': 'Engineer'}, {'job_role.title': 'Specialist'}]}]}
+        qury = {'$and':[{'age':{'$gte': 30}}, {'age': {'$lte': 45}},
+                        {'$or':[{'job_role.title': 'Engineer'}, {'job_role.title': 'Specialist'}]}]}
         select = {}
         result = collection.find(qury, select).to_list()
         result = self.serialize_docs(result)
@@ -54,14 +51,18 @@ class Mongo_qury:
         return result
     
     def get_managers_excluding_departments(self):
-        qury = {'$and': [{'job_role.title': 'Manager'},{'job_role.department': {'$ne': 'Sales'}},{'job_role.department': {'$ne': 'Marketing'}}]}
+        qury = {'$and': [{'job_role.title': 'Manager'},
+                         {'job_role.department': {'$ne': 'Sales'}},
+                         {'job_role.department': {'$ne': 'Marketing'}}]}
         select = {}
         result = collection.find(qury, select).to_list()
         result = self.serialize_docs(result)
         return result
     
     def get_employees_by_lastname_and_age(self):
-        qury = {'$and': [{'$or':[{'name':{'$regex': 'Nelson$'}} ,{'name':{'$regex': 'Wright$'}}]}, {'age': {'$lt': 35}}]}
+        qury = {'$and': [{'$or':[{'name':{'$regex': 'Nelson$'}} ,
+                                 {'name':{'$regex': 'Wright$'}}]},
+                                   {'age': {'$lt': 35}}]}
         select = {'_id': 0, 'name': 1, 'age': 1, 'job_role.department': 1}
         result = collection.find(qury, select).to_list()
         return result

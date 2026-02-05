@@ -1,6 +1,4 @@
 from fastapi import FastAPI, HTTPException, APIRouter
-# import models
-# import utils
 from dal import Mongo_qury
 
 
