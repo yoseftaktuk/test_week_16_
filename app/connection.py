@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import os
-from json_to_mongo import Collection
+
 
 
 class Mongo_connection:

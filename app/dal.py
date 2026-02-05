@@ -6,7 +6,7 @@ my_connection = Mongo_connection()
 
 collection = my_connection.collection
 
-def seve_data(file_name):
+def seve_data(file_name):# seve the data from the json file
     with open(file_name) as f:
         data = json.load(f)
         collection.insert_many(data)
@@ -19,7 +19,7 @@ class Mongo_qury:
             doc["_id"] = str(doc["_id"])
         return doc
 
-    def serialize_docs(self, docs):
+    def serialize_docs(self, docs):# func to replise the objectid to str
         return [self.serialize_doc(doc) for doc in docs]    
 
     def get_engineering_high_salary_employees(self):
