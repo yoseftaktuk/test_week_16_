@@ -2,13 +2,13 @@ from connection import Mongo_connection
 import json
 import pymongo
 from pymongo import MongoClient
-my_connection = Mongo_connection()
+# my_connection = Mongo_connection()
 
 # collection = my_connection.collection
 client = MongoClient('mongodb://localhost:27017/')
 
 db = client['admin']
-db.create_collection('employees')
+# db.create_collection('employees')
 collection = db['employees']
 
 def seve_data(file_name):
@@ -34,8 +34,7 @@ class Mongo_qury:
         return result   
     
     def get_employees_by_age_and_role(self):
-        qury = {'$and'[{'$or'[{'age':{'$gte': 30}}, {'age': {'$lte': 45}}]}],
-                {'$or'[{'job_role.title': 'Engineer'}, {'job_role.title': 'Specialist'}]}}
+        qury = {'$and':[{'age':{'$gte': 30}}, {'age': {'$lte': 45}},{'$or':[{'job_role.title': 'Engineer'}, {'job_role.title': 'Specialist'}]}]}
         select = {}
         result = collection.find(qury, select).to_list()
         result = self.serialize_docs(result)
@@ -49,16 +48,13 @@ class Mongo_qury:
         return result
     
     def get_employees_by_age_or_seniority(self):
-        qury = {'$or':[{'age':{'$gt': 59}},
-                        {'years_at_company': {'$lt': 3}}]}
+        qury = {'$or':[{'age':{'$gt': 50}},{'years_at_company': {'$lt': 3}}]}
         select = {'_id':0, 'employee_id': 1, 'name': 1, 'age': 1, 'years_at_company': 1}
         result = collection.find(qury, select).to_list()
         return result
     
     def get_managers_excluding_departments(self):
-        qury = {'$and': [{'job_role.title': 'Manager'},
-                          {'job_role.department': {'$ne': 'Sales'}},
-                          {'job_role.department': {'$ne': 'Marketing'}}]}
+        qury = {'$and': [{'job_role.title': 'Manager'},{'job_role.department': {'$ne': 'Sales'}},{'job_role.department': {'$ne': 'Marketing'}}]}
         select = {}
         result = collection.find(qury, select).to_list()
         result = self.serialize_docs(result)
